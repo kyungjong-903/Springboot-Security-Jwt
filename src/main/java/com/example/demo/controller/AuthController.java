@@ -2,17 +2,22 @@ package com.example.demo.controller;
 
 import com.example.demo.request.LoginRequest;
 import com.example.demo.request.UserRequest;
+import com.example.demo.service.AuthService;
 import com.example.demo.service.LoginService;
 import com.example.demo.util.StringUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final LoginService loginService;
+    private final AuthService authService;
 
     @GetMapping()
     public String getAuth() {
@@ -20,15 +25,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest request) {
-        boolean authLogin = StringUtil.hasValue(request.getUsername()) && StringUtil.hasValue(request.getPassword());
-        return null;
+    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
     }
 
     @PostMapping("/register")
     public String register(@RequestBody UserRequest request) {
 
-        String token = loginService.register(request);
 
         return null;
     }

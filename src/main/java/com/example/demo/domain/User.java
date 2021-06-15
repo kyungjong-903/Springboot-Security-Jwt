@@ -18,6 +18,8 @@ public class User extends InvalidatableEntity {
 
     private String password;
 
+    private String name;
+
     @Convert(converter = StringCryptoConverter.class)
     private String email;
 }

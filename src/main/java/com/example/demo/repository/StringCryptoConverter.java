@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import com.example.demo.util.StringUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class StringCryptoConverter implements AttributeConverter<String, String>
 
     @Override
     public String convertToEntityAttribute(String dbData) {
+        if(!StringUtil.hasValue(dbData)) return null;
         Key key = new SecretKeySpec(KEY, "AES");
         try {
             Cipher cipher = Cipher.getInstance(ALGORITHM);
