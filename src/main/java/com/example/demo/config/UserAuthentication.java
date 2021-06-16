@@ -17,8 +17,22 @@ public class UserAuthentication implements UserDetails, Authentication {
     private String principal;
     private String credential;
     private User user;
+    private boolean authenticated;
 
     public UserAuthentication(String username, String password) {
+        this.principal = username;
+        this.credential = password;
+    }
+
+    public UserAuthentication(User user) {
+        this.user = user;
+        this.principal = user.getUsername();
+        this.credential = user.getPassword();
+        this.authenticated = true;
+    }
+
+    public UserAuthentication(String username, String password, User user) {
+        this.user = user;
         this.principal = username;
         this.credential = password;
     }
@@ -47,12 +61,12 @@ public class UserAuthentication implements UserDetails, Authentication {
 
     @Override
     public boolean isAuthenticated() {
-        return false;
+        return this.authenticated;
     }
 
     @Override
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-
+        this.authenticated = isAuthenticated;
     }
 
     public Long getUserId() {

@@ -1,6 +1,9 @@
 package com.example.demo.config;
 
+import com.example.demo.domain.User;
 import com.example.demo.dto.UserDto;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.util.FindByIdUtil;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -17,6 +20,8 @@ public class TokenProvider {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
 
     public static final String BEARER_JWT_KEY_NAME = "Authorization";
     public static final String BEARER_JWT_PREFIX = "Bearer ";
@@ -45,9 +50,7 @@ public class TokenProvider {
 
     public UserAuthentication getAuthentication(String accessToken) {
         // 토큰 복호화
-        Claims claims = parseClaims(accessToken);
-
-        return null;
+        return new UserAuthentication(getAuthentication(parseClaims(accessToken)));
     }
 
 
@@ -67,12 +70,21 @@ public class TokenProvider {
         return false;
     }
 
+    //Inner Method
+
     private Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
+    }
+
+    private User getAuthentication(Claims claims) {
+        Long userId = Long.parseLong(claims.get("id").toString());
+        if(!passwordEncoder.matches(userId.toString(), claims.getSubject())) System.out.println("에러");
+
+        return FindByIdUtil.findTargetOrThrow(userRepository, userId);
     }
 
 }

@@ -1,16 +1,14 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.UserAuthentication;
+import com.example.demo.domain.User;
 import com.example.demo.request.LoginRequest;
 import com.example.demo.request.UserRequest;
 import com.example.demo.service.AuthService;
-import com.example.demo.service.LoginService;
-import com.example.demo.util.StringUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @AllArgsConstructor
 @RestController
@@ -21,7 +19,10 @@ public class AuthController {
 
     @GetMapping()
     public String getAuth() {
-        return "Auth";
+
+        UserAuthentication auth = (UserAuthentication) SecurityContextHolder.getContext().getAuthentication();
+
+        return auth.getUser().getName();
     }
 
     @PostMapping("/login")
